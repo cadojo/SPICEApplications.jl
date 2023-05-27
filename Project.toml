@@ -1,0 +1,19 @@
+name = "SPICEApplications"
+uuid = "e12e0822-0612-48d4-a4bb-92984dd6b6ec"
+authors = ["Joe Carpinelli <joseph.d.carpinelli@loopy.software>"]
+version = "0.1.0"
+
+[deps]
+CSPICE_jll = "07f52509-e9d9-513c-a20d-3b911885bf96"
+DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
+HorizonsEphemeris = "05ee1981-f730-42d8-b713-4f42d99733dc"
+Tables = "bd369af6-aec1-5ad0-b16a-f7cc5008161c"
+
+[extras]
+Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+SPICE = "5bab7191-041a-5c2e-a744-024b9c3a5062"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]

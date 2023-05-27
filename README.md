@@ -25,10 +25,6 @@ julia> ]add SPICEApplications
 julia> import Pkg; Pkg.add("SPICEApplications");
 ```
 
-## Limitations
-
-...
-
 ## Envisioned Usage
 
 ```julia
@@ -47,6 +43,6 @@ furnsh(kernel)
 NASA JPL developed and maintains the
 [NAIF SPICE Toolkit](https://naif.jpl.nasa.gov/naif/toolkit.html), including
 `SPICEApplications`. Helge Eichhorn developed and maintains
-`[SPICE.jl`](https://github.com/JuliaAstro/SPICE.jl), as well as the
+[`SPICE.jl`](https://github.com/JuliaAstro/SPICE.jl), as well as the
 [Julia wrappers](https://juliahub.com/ui/Packages/CSPICE_jll/XJqVo/67.0.0+0)
 around the SPICE Toolkit.

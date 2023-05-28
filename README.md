@@ -20,9 +20,11 @@ all from within Julia!_
 Choose one of the following two lines!
 
 ```julia
-julia> ]add SPICEApplications
+import Pkg; Pkg.add("SPICEApplications");
+```
 
-julia> import Pkg; Pkg.add("SPICEApplications");
+```julia
+]add SPICEApplications # in Julia's REPL
 ```
 
 ## Envisioned Usage

@@ -55,7 +55,46 @@ include("docstrings.jl")
 """
 BRIEF is a command-line utility program that displays a contents and time coverage summary for one or more binary SPK or binary PCK files.
 """
-function brief() end
+function brief(file::AbstractString...;
+    tabular=false, single=false, centers=false, utc=false, utcdoy=false, etsec=false,
+    sec=false, min=false, hour=false, day=false, bytime=false, bycoverage=false,
+    byid=false, byname=false, body=nothing, center=nothing, at=nothing, from=nothing,
+    to=nothing, listfile=nothing, help=false, version=false
+)
+
+    args = String[]
+    tabular && push!(args, "-t")
+    single && push!(args, "-a")
+    centers && push!(args, "-c")
+
+    utc && push!(args, "-utc")
+    utcdoy && push!(args, "-utcdoy")
+    etsec && push!(args, "-etsec")
+    sec && push!(args, "-sec")
+    min && push!(args, "-min")
+    hour && push!(args, "-hour")
+    day && push!(args, "-day")
+
+    bytime && push!(args, "-s")
+    bycoverage && push!(args, "-g")
+    byid && push!(args, "-n")
+    byname && push!(args, "-o")
+
+    !isnothing(body) && push!(args, "-sb$body")
+    !isnothing(center) && push!(args, "-sc$center")
+    !isnothing(at) && push!(args, "-at $at")
+    !isnothing(from) && push!(args, "-from $from")
+    !isnothing(to) && push!(args, "-to $to")
+    !isnothing(listfile) && push!(args, "-f $listfile")
+
+    help && push!(args, "-h")
+    version && push!(args, "-v")
+
+    files = join(file, " ")
+    run(`$(CSPICE_jll.brief()) $args $files`)
+
+    nothing
+end
 
 
 """

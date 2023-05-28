@@ -35,8 +35,8 @@ using Dates
 using SPICE
 using HorizonsEphemeris
 
-grid = ephemeris("earth", now() - Year(10), now() + Year(10), Day(1))
-kernel = SPICEApplications(grid)
+ephemeris("earth", now() - Year(10), now() + Year(10), Day(1); file="earth.csv")
+kernel = mkspk("earth.csv")
 furnsh(kernel)
 ```
 

@@ -55,7 +55,8 @@ include("docstrings.jl")
 """
 BRIEF is a command-line utility program that displays a contents and time coverage summary for one or more binary SPK or binary PCK files.
 """
-function brief(file::AbstractString...;
+function brief(
+    file::AbstractString...;
     tabular=false, single=false, centers=false, utc=false, utcdoy=false, etsec=false,
     sec=false, min=false, hour=false, day=false, bytime=false, bycoverage=false,
     byid=false, byname=false, body=nothing, center=nothing, at=nothing, from=nothing,
@@ -90,8 +91,11 @@ function brief(file::AbstractString...;
     help && push!(args, "-h")
     version && push!(args, "-v")
 
+    args = join(args, " ")
     files = join(file, " ")
-    run(`$(CSPICE_jll.brief()) $args $files`)
+    cmd = `$(CSPICE_jll.brief()) $args $files`
+    @debug cmd
+    run(cmd)
 
     nothing
 end
@@ -100,7 +104,39 @@ end
 """
 CHRONOS is a command-line program that converts between several time systems and time formats.
 """
-function chronos() end
+function chronos(
+    file::AbstractString...;
+    from=nothing, fromtype=nothing, to=nothing, totype=nothing, format=nothing,
+    time=nothing, sc=nothing, center=nothing, landingtime=nothing, sol1index=nothing,
+    nolabel=false, trace=false, help=false, usage=false, template=false
+)
+
+    args = String[]
+
+    !isnothing(from) && push!(args, "-FROM $from")
+    !isnothing(fromtype) && push!(args, "-FROMTYPE $fromtype")
+    !isnothing(to) && push!(args, "-TO $to")
+    !isnothing(totype) && push!(args, "-TOTYPE $totype")
+    !isnothing(format) && push!(args, "-FORMAT $format")
+    !isnothing(time) && push!(args, "-TIME $time")
+    !isnothing(sc) && push!(args, "-sc $sc")
+    !isnothing(center) && push!(args, "-CENTER $center")
+    !isnothing(landingtime) && push!(args, "-LANDINGTIME $landingtime")
+    !isnothing(sol1index) && push!(args, "-SOL1INDEX $sol1index")
+    nolabel && push!(args, "-NOLABEL")
+    trace && push!(args, "-TRACE")
+    help && push!(args, "-HELP")
+    usage && push!(args, "-USAGE")
+    template && push!(args, "-TEMPLATE")
+
+    args = join(args, " ")
+    files = join(file, " ")
+    cmd = `$(CSPICE_jll.chronos()) $files $args`
+    @debug cmd
+    run(cmd)
+
+    nothing
+end
 
 
 """
@@ -156,8 +192,12 @@ function mkspk(setup=nothing; input=nothing, output=nothing, append=false)
     !isnothing(output) && append!(args, ("-output", String(output)))
     append && push!(args, "-append")
 
-    run(`$(CSPICE_jll.mkspk()) $args`)
+    args = join(args, " ")
+    cmd = `$(CSPICE_jll.mkspk()) $args`
+    @debug cmd
+    run(cmd)
 
+    nothing
 end
 
 

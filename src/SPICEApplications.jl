@@ -54,6 +54,36 @@ include("docstrings.jl")
 
 """
 BRIEF is a command-line utility program that displays a contents and time coverage summary for one or more binary SPK or binary PCK files.
+
+# Extended Help
+
+!!! warning
+    All descriptions below were manually parsed from the commandline program's help/usage output.
+
+| Argument | Equivalent | Description | 
+| :--- | :--- | :--- |
+| `tabular` | `-t` | Display summary in a tabular format |
+| `single` | `-a` | Treat all files as a single file | 
+| `centers` | `-c` | Displays centers of motion/relative-to frames | 
+| `utc` | `-utc` | Display times in UTC calendar date format (needs LSK) | 
+| `utcdoy` | `-utcdoy` | Display times in UTC day-of-year format (needs LSK) |
+| `etsec` | `-etsec` | Display times as ET seconds past J2000 | 
+| `sec` | `-sec` | Display times "rounded inward" to second | 
+| `min` | `-min` | Display times "rounded inward" to minute | 
+| `hour` | `-hour` | Display times "rounded inward" to hour | 
+| `day` | `-day` | Display times "rounded inward" to day | 
+| `bytime` | `-s` | Display summary sorted by start time for each body/frame | 
+| `bycoverage` | `-g` | Display summary grouped by coverage | 
+| `byid` | `-n` | Display bodies/frames using numeric id-codes | 
+| `byname` | `-o` | Display summary ordered by body/frame name | 
+| `body` | `-sb[bod]` | Display summary for body [bod] |
+| `center` | `-sc[cen]` | Display summary for center of motion/relative-to frame [cen] | 
+| `at` | `-at [time]` | Display summary if coverage contains epoch [time] |
+| `from` | `-from [beg]` | Display summary if coverage contains interval [beg]:[end] |
+| `to` | `-to [end]` | Display summary if coverage contains interval [beg]:[end] |
+| `listfile` | `-f [list]` | Summarize kernels listed in the [list] file | 
+| `help` | `-h` | Display help | 
+| `version` | `-v` | Display version| 
 """
 function brief(
     file::AbstractString...;
@@ -103,6 +133,29 @@ end
 
 """
 CHRONOS is a command-line program that converts between several time systems and time formats.
+
+# Extended Help
+
+!!! warning
+    All descriptions below were manually parsed from the commandline program's help/usage output.
+
+| Argument | Equivalent | Description | 
+| :--- | :--- | :--- |
+| `from` | `-FROM <"from" time system>` | "from" time system |
+| `fromtype` | `-FROMTYPE <"from" time system type>` | "from" time system type|
+| `to` | `-TO <"to" time system>` | "to" time system |
+| `totype` | `-TOTYPE <"to" time system type>` | "to" time system  type |
+| `format` | `-FORMAT <output time format picture>` | output time format picture|
+| `time` | `-TIME <input time>` | intput time|
+| `sc` | `-SC <sc ID>` | sc ID|
+| `center` | `-CENTER <cental body ID>` | cental body ID|
+|`landingtime` | `-LANDINGTIME <UTC time of the landing>` | UTC time of the landing |
+| `sol1index` | `-SOL1INDEX <index of the first SOL>` | index of the first SOL |
+| `nolabel` | `-NOLABEL` | |
+| `trace` | `-TRACE` | |
+| `help` | `-HELP` | display help |
+| `usage` | `-USAGE` | display usage |
+| `template` | `-TEMPLATE` | display setup file template |
 """
 function chronos(
     file::AbstractString...;
@@ -142,7 +195,14 @@ end
 """
 CKBRIEF is a command-line utility program that displays a contents and time coverage summary for one or more binary CK files.
 """
-function ckbrief() end
+function ckbrief(
+    files::AbstractString...;
+    dump=false,
+    boundaries=false,
+    relframes=false,
+    idframes=false)
+
+end
 
 
 """

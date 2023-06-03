@@ -195,7 +195,6 @@ end
 """
 CKBRIEF is a command-line utility program that displays a contents and time coverage summary for one or more binary CK files.
 
-
 # Extended Help
 
 !!! warning
@@ -270,8 +269,45 @@ end
 
 """
 COMMNT is a command-line program that reads, adds, extracts, or deletes comments from SPICE binary kernel files.
+
+# Extended Help
+
+!!! warning
+    All descriptions below were manually parsed from the commandline program's help/usage output.
+
+| Argument | Equivalent | Description | 
+| :--- | :--- | :--- |
+| `append` | `-a` | add comments to binary kernel |
+| `extract` | `-e` | extract comments from a binary kernel |
+| `read` | `-r` | read the comments in a binary kernel | 
+| `delete` | `-d`| delete the comments from the binary kernel | 
+| `help` | `-h` | display the help message |
 """
-function commnt() end
+function commnt(
+    kernelfile::AbstractString, commentfile::AbstractString;
+    append=false,
+    extract=false,
+    read=false,
+    delete=false,
+    help=false,
+) 
+
+    args = String[]
+
+    append && push!(args, "-a")
+    extract && push!(args, "-e")
+    read && push!(args, "-r")
+    delete && push!(args, "-d")
+    help && push!(args, "-h")
+    
+    args = join(args, " ")
+    cmd = `$(CSPICE_jll.commnt()) $args $kernelfile $commentfile`
+    @debug cmd
+    run(cmd)
+
+    nothing
+
+end
 
 
 """

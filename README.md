@@ -27,19 +27,6 @@ import Pkg; Pkg.add("SPICEApplications");
 ]add SPICEApplications # in Julia's REPL
 ```
 
-## Envisioned Usage
-
-```julia
-using SPICEApplications
-using Dates
-using SPICE
-using HorizonsEphemeris
-
-ephemeris("earth", now() - Year(10), now() + Year(10), Day(1); file="earth.csv")
-kernel = mkspk("earth.csv")
-furnsh(kernel)
-```
-
 ## Credits
 
 NASA JPL developed and maintains the

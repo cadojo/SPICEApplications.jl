@@ -220,21 +220,9 @@ CKBRIEF is a command-line utility program that displays a contents and time cove
 """
 function ckbrief(
     files::AbstractString...;
-    dump=false,
-    boundaries=false,
-    relframes=false,
-    idframes=false,
-    tabular=false,
-    single=false,
-    bycoverage=false,
-    utc=false,
-    utcdoy=false,
-    sclk=false,
-    dpsclk=false,
-    id=nothing,
-    summarize=nothing,
-    help=false,
-    version=false
+    dump=false, boundaries=false, relframes=false, idframes=false, tabular=false,
+    single=false, bycoverage=false, utc=false, utcdoy=false, sclk=false, dpsclk=false,
+    id=nothing, summarize=nothing, help=false, version=false
 )
 
     args = String[]
@@ -285,11 +273,7 @@ COMMNT is a command-line program that reads, adds, extracts, or deletes comments
 """
 function commnt(
     kernelfile::AbstractString, commentfile::AbstractString;
-    append=false,
-    extract=false,
-    read=false,
-    delete=false,
-    help=false,
+    append=false, extract=false, read=false, delete=false, help=false,
 ) 
 
     args = String[]
@@ -332,16 +316,8 @@ DSKBRIEF is a command-line utility program that displays a summary of the spatia
 """
 function dskbrief(
     file::AbstractString...;
-    single=false,
-    gaps=false,
-    extended=false,
-    timebounds=false,
-    bysegment=false,
-    full=false,
-    sigdigs=nothing,
-    version=false,
-    help=false,
-    usage=false
+    single=false, gaps=false, extended=false, timebounds=false, bysegment=false,
+    full=false, sigdigs=nothing, version=false, help=false, usage=false
 ) 
 
     args = String[]
@@ -438,26 +414,10 @@ FRMDIFF is a program that samples orientation of a reference frame known to SPIC
 """
 function frmdiff(
     file::AbstractString...;
-    kernels=nothing,
-    from1=nothing,
-    to1=nothing,
-    frame1=nothing,
-    supporting_kernels1=nothing,
-    from2=nothing,
-    to2=nothing,
-    frame2=nothing,
-    supporting_kernels2=nothing,
-    angular=false,
-    angularframe=nothing,
-    start=nothing,
-    stop=nothing,
-    numpoints=nothing,
-    timestep=nothing,
-    timeformat=nothing,
-    report=nothing,
-    rotation=nothing,
-    units=nothing,
-    sigdigs=nothing
+    kernels=nothing, from1=nothing, to1=nothing, frame1=nothing, supporting_kernels1=nothing,
+    from2=nothing, to2=nothing, frame2=nothing, supporting_kernels2=nothing, angular=false, 
+    angularframe=nothing, start=nothing, stop=nothing, numpoints=nothing, timestep=nothing, 
+    timeformat=nothing, report=nothing, rotation=nothing, units=nothing, sigdigs=nothing
 ) 
 
     args = String[]
@@ -510,21 +470,66 @@ end
 
 
 """
-MKDSK is a utielity program that creates a SPICE Digital Shape Kernel (DSK) file from a text file containing shape data for an extended object.
+MKDSK is a utility program that creates a SPICE Digital Shape Kernel (DSK) file from a text file containing shape data for an extended object.
+
+# Extended Help
+
+!!! warning
+    All descriptions below were manually parsed from the commandline program's help/usage output.
+
+| Argument | Equivalent | Description | 
+| :--- | :--- | :--- |
+| `setup` | `-setup <setup file name>` | setup file name |
+| `input` | `-input <input shape data file name>` | input shape data file name | 
+| `output` | `-output <output DSK file name>` | output DSK file name |
+| `help` | `-h│-help` | display help |
+| `template` | `-t│-template` | display template |
+| `usage` | `-u│-usage` | display usage |
+| `version` | `-v│-version` | display version | 
 """
-function mkdsk() end
+function mkdsk(
+    ; setup=nothing, input=nothing, output=nothing, help=false,
+      template=false, usage=false, version=false
+) 
+
+    args = String[]
+    !isnothing(setup) && push!(args, "-setup $setup")
+    !isnothing(input) && push!(args, "-input $input")
+    !isnothing(output) && push!(args, "-output $output")
+
+    help && push!(args, "-help")
+    template && push!(args, "-template")
+    usage && push!(args, "-usage")
+    version && push!(args, "-version")
+
+    args = join(args, " ")
+    files = join(file, " ")
+    cmd = `$(CSPICE_jll.mkdsk()) $args $files`
+    @debug cmd
+    run(cmd)
+
+    nothing
+
+end
 
 
 """
 MKSPK is a program that creates an SPK file from a text file containing trajectory information.
 """
-function mkspk(; setup=nothing, input=nothing, output=nothing, append=false)
+function mkspk(
+    ; setup=nothing, input=nothing, output=nothing, append=false, 
+      usage=false, help=false, template=false
+)
 
     args = String[]
-    !isnothing(setup) && append!(args, ("-setup", String(setup)))
-    !isnothing(input) && append!(args, ("-input", String(input)))
-    !isnothing(output) && append!(args, ("-output", String(output)))
+    !isnothing(setup) && push!(args, "-setup $setup")
+    !isnothing(input) && push!(args, "-input $input")
+    !isnothing(output) && push!(args, "-output $output")
+
     append && push!(args, "-append")
+    usage && push!(args, "-usage")
+    help && push!(args, "-help")
+    template && push!(args, "-template")
 
     args = join(args, " ")
     cmd = `$(CSPICE_jll.mkspk()) $args`

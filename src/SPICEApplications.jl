@@ -381,7 +381,7 @@ DSKEXP is a command-line program that exports data from DSK files to text files.
 | :--- | :--- | :--- |
 | `dsk` | `-dsk <dsk>` | DSK kernel |
 | `text` | `-text <output name>` | output name |
-| `format` `-format <MKDSK format code/name>` | MKSDK format code/name | 
+| `format` | `-format <MKDSK format code/name>` | MKSDK format code/name | 
 | `precision` | `-prec <# of vertex mantissa digits (1:17)` | number of vertex mantissa digits |
 """
 function dskexp(
@@ -424,14 +424,14 @@ FRMDIFF is a program that samples orientation of a reference frame known to SPIC
 |  `to2` | `-t2 <second ``to'' frame, name or ID>` | second "to" frame, name or ID |
 |  `frame2` | `-c2 <second frame for coverage look up, name or ID>` | second frame for coverage look up, name or ID |
 |  `supporting_kernels2` | `-k2 <additional supporting kernel(s) for second file>` | additional supporting kernel(s) for second file |
-| `angular`  | `-a  <compare angular velocities: yes|no (default: no)>` | compare angular velocities |
-|  `angularframe` | `-m  <frame for angular velocities: from|to (default: from)>` | frame for angular velocities |
+| `angular`  | `-a  <compare angular velocities: yes│no (default: no)>` | compare angular velocities |
+|  `angularframe` | `-m  <frame for angular velocities: from│to (default: from)>` | frame for angular velocities |
 |  `start` | `-b  <interval start time>` | interval start time |
 |  `stop` | `-e  <interval stop time>` | interval stop time |
 |  `numpoints` | `-n  <number of points: 1 to 1000000 (default: 1000)>` | number of points |
 |  `timestep` | `-s  <time step in seconds>` | time step in seconds |
-|  `timeformat` | `-f  <time format: et|sclk|sclkd|ticks|picture_for_TIMOUT (default: et)>` | time format |
-|  `report` | `-t  <report: basic|stats|dumpaa|dumpm|dumpqs|dumpqo|dumpea|dumpc|dumpg>` | report |
+|  `timeformat` | `-f  <time format: et│sclk│sclkd│ticks│picture_for_TIMOUT (default: et)>` | time format |
+|  `report` | `-t  <report: basic│stats│dumpaa│dumpm│dumpqs│dumpqo│dumpea│dumpc│dumpg>` | report |
 |  `rotation` | `-o  <rotation axes order (default: z y x)>` | rotation axes order |
 | `units`  | `-x  <units for output angles> (only for -t dumpaa and -t dumpea)` | units for output angles |
 | `sigdigs`  | `-d  <number of significant digits: 6 to 17 (default: 14)>` | number of significant digits |
@@ -505,7 +505,7 @@ function inspekt()
     run(cmd)
 
     nothing
-    
+
 end
 
 
@@ -518,7 +518,7 @@ function mkdsk() end
 """
 MKSPK is a program that creates an SPK file from a text file containing trajectory information.
 """
-function mkspk(setup=nothing; input=nothing, output=nothing, append=false)
+function mkspk(; setup=nothing, input=nothing, output=nothing, append=false)
 
     args = String[]
     !isnothing(setup) && append!(args, ("-setup", String(setup)))

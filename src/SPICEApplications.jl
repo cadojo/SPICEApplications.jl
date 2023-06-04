@@ -491,7 +491,6 @@ function mkdsk(
     ; setup=nothing, input=nothing, output=nothing, help=false,
       template=false, usage=false, version=false
 ) 
-
     args = String[]
     !isnothing(setup) && push!(args, "-setup $setup")
     !isnothing(input) && push!(args, "-input $input")
@@ -509,18 +508,31 @@ function mkdsk(
     run(cmd)
 
     nothing
-
 end
 
 
 """
 MKSPK is a program that creates an SPK file from a text file containing trajectory information.
+
+# Extended Help
+
+!!! warning
+    All descriptions below were manually parsed from the commandline program's help/usage output.
+
+| Argument | Equivalent | Description | 
+| :--- | :--- | :--- |
+| `setup` | `-setup <setup file name>` | setup file name |
+| `input` | `-input <input shape data file name>` | input shape data file name | 
+| `output` | `-output <output DSK file name>` | output DSK file name |
+| `append` | `-append` | append; output file must be new |
+| `help` | `-h│-help` | display help |
+| `template` | `-t│-template` | display template |
+| `usage` | `-u│-usage` | display usage |
 """
 function mkspk(
     ; setup=nothing, input=nothing, output=nothing, append=false, 
       usage=false, help=false, template=false
 )
-
     args = String[]
     !isnothing(setup) && push!(args, "-setup $setup")
     !isnothing(input) && push!(args, "-input $input")
@@ -543,7 +555,21 @@ end
 """
 MSOPCK is a command-line program that converts attitude data provided in a text file as UTC, SCLK, or ET-tagged quaternions, Euler angles, or matrices, optionally accompanied by angular velocities, into a type 1, 2, or 3 SPICE C-kernel.
 """
-function msopck() end
+function msopck(
+    ; setup=nothing, input=nothing, output=nothing,
+) 
+    args = String[]
+    !isnothing(setup) && push!(args, "-setup $setup")
+    !isnothing(input) && push!(args, "-input $input")
+    !isnothing(output) && push!(args, "-output $output")
+
+    args = join(args, " ")
+    cmd = `$(CSPICE_jll.msopck()) $args`
+    @debug cmd
+    run(cmd)
+
+    nothing
+end
 
 
 """

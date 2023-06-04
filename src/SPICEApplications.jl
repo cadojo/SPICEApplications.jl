@@ -92,7 +92,6 @@ function brief(
     byid=false, byname=false, body=nothing, center=nothing, at=nothing, from=nothing,
     to=nothing, listfile=nothing, help=false, version=false
 )
-
     args = String[]
     tabular && push!(args, "-t")
     single && push!(args, "-a")
@@ -163,7 +162,6 @@ function chronos(
     time=nothing, sc=nothing, center=nothing, landingtime=nothing, sol1index=nothing,
     nolabel=false, trace=false, help=false, usage=false, template=false
 )
-
     args = String[]
 
     !isnothing(from) && push!(args, "-FROM $from")
@@ -224,7 +222,6 @@ function ckbrief(
     single=false, bycoverage=false, utc=false, utcdoy=false, sclk=false, dpsclk=false,
     id=nothing, summarize=nothing, help=false, version=false
 )
-
     args = String[]
 
     dump && push!(args, "-dump")
@@ -275,7 +272,6 @@ function commnt(
     kernelfile::AbstractString, commentfile::AbstractString;
     append=false, extract=false, read=false, delete=false, help=false,
 ) 
-
     args = String[]
 
     append && push!(args, "-a")
@@ -290,7 +286,6 @@ function commnt(
     run(cmd)
 
     nothing
-
 end
 
 
@@ -319,7 +314,6 @@ function dskbrief(
     single=false, gaps=false, extended=false, timebounds=false, bysegment=false,
     full=false, sigdigs=nothing, version=false, help=false, usage=false
 ) 
-
     args = String[]
 
     single && push!(args, "-a")
@@ -341,7 +335,6 @@ function dskbrief(
     run(cmd)
 
     nothing
-
 end
 
 
@@ -363,7 +356,6 @@ DSKEXP is a command-line program that exports data from DSK files to text files.
 function dskexp(
     ; dsk=nothing, text=nothing, format=nothing, precision=nothing
 ) 
-
     args = String[]
 
     !isnothing(dsk) && push!(args, "-dsk $dsk")
@@ -377,7 +369,6 @@ function dskexp(
     run(cmd)
 
     nothing
-
 end
 
 
@@ -419,7 +410,6 @@ function frmdiff(
     angularframe=nothing, start=nothing, stop=nothing, numpoints=nothing, timestep=nothing, 
     timeformat=nothing, report=nothing, rotation=nothing, units=nothing, sigdigs=nothing
 ) 
-
     args = String[]
 
     !isnothing(kernels) && push!(args, "-k $kernels")
@@ -459,13 +449,11 @@ end
 INSPEKT is an interactive program that examines the contents of an events component (ESQ) of an E-kernel.
 """
 function inspekt() 
-
     cmd = `$(CSPICE_jll.inspekt())`
     @debug cmd
     run(cmd)
 
     nothing
-
 end
 
 
@@ -575,7 +563,13 @@ end
 """
 SPACIT is an interactive program that converts kernels in transfer format to binary format, converts binary kernels to transfer format, and summarizes the contents of binary kernels.
 """
-function spacit() end
+function spacit() 
+    cmd = `$(CSPICE_jll.spacit())`
+    @debug cmd
+    run(cmd)
+
+    nothing
+end
 
 
 """

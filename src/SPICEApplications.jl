@@ -404,7 +404,6 @@ FRMDIFF is a program that samples orientation of a reference frame known to SPIC
 | `sigdigs`  | `-d  <number of significant digits: 6 to 17 (default: 14)>` | number of significant digits |
 """
 function frmdiff(
-    file::AbstractString...;
     kernels=nothing, from1=nothing, to1=nothing, frame1=nothing, supporting_kernels1=nothing,
     from2=nothing, to2=nothing, frame2=nothing, supporting_kernels2=nothing, angular=false, 
     angularframe=nothing, start=nothing, stop=nothing, numpoints=nothing, timestep=nothing, 
@@ -412,15 +411,31 @@ function frmdiff(
 ) 
     args = String[]
 
-    !isnothing(kernels) && push!(args, "-k $kernels")
+    additems!(collection, key::AbstractString) = push!(collection, key)
+    additems!(collection, items::Union{<:Tuple, <:AbstractVector}) = append!(collection, items)
+
+    if !isnothing(kernels)
+        push!(args, "-k")
+        additems!(args, kernels)
+    end
+
     !isnothing(from1) && push!(args, "-f1 $from1")
     !isnothing(to1) && push!(args, "-t1 $to1")
     !isnothing(frame1) && push!(args, "-c1 $frame1")
-    !isnothing(supporting_kernels1) && push!(args, "-k1 $(supporting_kernels1)")
+
+    if !isnothing(supporting_kernels1)
+        push!(args, "-k1")
+        additems!(args, supporting_kernels1)
+    end
+
     !isnothing(from2) && push!(args, "-f2 $from2")
     !isnothing(to2) && push!(args, "-t2 $to2")
     !isnothing(frame2) && push!(args, "-c2 $frame2")
-    !isnothing(supporting_kernels2) && push!(args, "-k2 $(supporting_kernels2)")
+
+    if !isnothing(supporting_kernels2)
+        push!(args, "-k2")
+        additems!(args, supporting_kernels2)
+    end
 
     angular && push!(args, "-a " * (angular ? "yes" : "no"))
 
@@ -436,8 +451,7 @@ function frmdiff(
     !isnothing(sigdigs) && push!(args, "-d $sigdigs")
 
     args = join(args, " ")
-    files = join(file, " ")
-    cmd = `$(CSPICE_jll.frmdiff()) $args $files`
+    cmd = `$(CSPICE_jll.frmdiff()) $args`
     @debug cmd
     run(cmd)
 
@@ -574,26 +588,115 @@ end
 
 """
 SPKDIFF provides means for comparing the trajectories of two bodies or sampling the trajectory of a single body using data from SPICE kernels.
+# Extended Help
+
+!!! warning
+    All descriptions below were manually parsed from the commandline program's help/usage output.
+
+| Argument | Equivalent | Description | 
+| :--- | :--- | :--- |
+| `kernels` | `-k  <supporting kernel(s) name(s)>` | -k  <supporting kernel(s) name(s)> |
+| `body1` | `-b1 <first body name or ID>` | -b1 <first body name or ID> |
+| `center1` | `-c1 <first center name or ID>` | -c1 <first center name or ID> |
+| `frame1` | `-r1 <first reference frame name>` | -r1 <first reference frame name> |
+| `supporting_kernels1` | `-k1 <additional supporting kernel(s) for first SPK>` | -k1 <additional supporting kernel(s) for first SPK> |
+| `body2` | `-b2 <second body name or ID>` | -b2 <second body name or ID> |
+| `center2` | `-c2 <second center name or ID>` | -c2 <second center name or ID> |
+| `frame2` | `-r2 <second reference frame name>` | -r2 <second reference frame name> |
+| `supporting_kernels2` | `-k2 <additional supporting kernel(s) for second SPK>` | -k2 <additional supporting kernel(s) for second SPK> |
+| `start` | `-b  <interval start time>` | -b  <interval start time> |
+| `stop` | `-e  <interval stop time>` | -e  <interval stop time> |
+| `timestep` | `-s  <time step in seconds>` | -s  <time step in seconds> |
+| `numstates` | `-n  <number of states: 2 to 1000000 (default: 1000)>` | -n  <number of states: 2 to 1000000 (default: 1000)> |
+| `timeformat` | `-f  <output time format (default: TDB seconds past J2000)>` | -f  <output time format (default: TDB seconds past J2000)> |
+| `sigdigs1 | `-d  <number of significant digits: 6 to 17 (default: 14)>` | -d  <number of significant digits: 6 to 17 (default: 14)> |
+| `report` | `-t  <report type: basic│stats│dump│dumpvf│dumpc│dumpg (def.: basic│dump)>` | -t  <report type: basic│stats│dump│dumpvf│dumpc│dumpg (def.: basic│dump)> |
 """
-function spkdiff() end
+function spkdiff(
+    ; kernels=nothing, body1=nothing, center1=nothing, frame1=nothing, supporting_kernels1=nothing,
+      body2=nothing, center2=nothing, frame2=nothing, supporting_kernels2=nothing, 
+      start=nothing, stop=nothing, timestep=nothing, numstates=nothing, timeformat=nothing, 
+      sigdigs=nothing, report=nothing
+) 
+    args = String[]
+
+    additems!(collection, key::AbstractString) = push!(collection, key)
+    additems!(collection, items::Union{<:Tuple, <:AbstractVector}) = append!(collection, items)
+
+    if !isnothing(kernels)
+        push!(args, "-k")
+        additems!(args, kernels)
+    end
+
+    !isnothing(body1) && push!(args, "-b1 $body1")
+    !isnothing(center1) && push!(args, "-c1 $center1")
+    !isnothing(frame1) && push!(args, "-r1 $frame1")
+
+    if !isnothing(supporting_kernels1)
+        push!(args, "-k1")
+        additems!(args, supporting_kernels1)
+    end
+
+    !isnothing(body2) && push!(args, "-b2 $body2")
+    !isnothing(center2) && push!(args, "-c2 $center2")
+    !isnothing(frame2) && push!(args, "-r2 $frame2")
+
+    if !isnothing(supporting_kernels2)
+        push!(args, "-k2")
+        additems!(args, supporting_kernels2)
+    end
+
+    !isnothing(start) && push!(args, "-b $start")
+    !isnothing(stop) && push!(args, "-e $stop")
+    !isnothing(timestep) && push!(args, "-s $timestep")
+    !isnothing(numstates) && push!(args, "-n $numstates")
+    !isnothing(timeformat) && push!(args, "-f $timeformat")
+    !isnothing(sigdigs) && push!(args, "-d $sigdigs")
+    !isnothing(report) && push!(args, "-t $report")
+
+    args = join(args, " ")
+    cmd = `$(CSPICE_jll.spkdiff()) $args`
+    @debug cmd
+    run(cmd)
+
+    nothing
+end
 
 
 """
 SPKMERGE is a program that subsets or merges one or more SPK files into a single SPK file.
 """
-function spkmerge() end
+function spkmerge(commandfile=nothing) 
+    cmd = `$(CSPICE_jll.spkmerge()) $(isnothing(commandfile) ? "" : commandfile)`
+    @debug cmd
+    run(cmd)
+
+    nothing
+end
 
 
 """
 TOBIN is a command-line program that converts transfer format SPK, CK, PCK, DSK and EK files to binary format.
 """
-function tobin() end
+function tobin(kernelfile=nothing) 
+    cmd = `$(CSPICE_jll.tobin()) $(isnothing(kernelfile) ? "" : kernelfile)`
+    @debug cmd
+    run(cmd)
+
+    nothing
+end
 
 
 """
 TOXFR is a command-line program that converts binary format SPK, CK, PCK, DSK and EK files to transfer format.
 """
-function toxfr() end
+function toxfr(kernelfile=nothing) 
+    cmd = `$(CSPICE_jll.toxfr()) $(isnothing(kernelfile) ? "" : kernelfile)`
+    @debug cmd
+    run(cmd)
+
+    nothing
+end
 
 
 end # module SPICEApplications

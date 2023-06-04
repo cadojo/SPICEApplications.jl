@@ -498,7 +498,15 @@ end
 """
 INSPEKT is an interactive program that examines the contents of an events component (ESQ) of an E-kernel.
 """
-function inspekt() end
+function inspekt() 
+
+    cmd = `$(CSPICE_jll.inspekt())`
+    @debug cmd
+    run(cmd)
+
+    nothing
+    
+end
 
 
 """

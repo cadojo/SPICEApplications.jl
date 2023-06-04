@@ -407,8 +407,92 @@ end
 
 """
 FRMDIFF is a program that samples orientation of a reference frame known to SPICE or computes differences between orientations of two reference frames known to SPICE, and either displays this orientation or these differences, or shows statistics about it or them.
+
+# Extended Help
+
+!!! warning
+    All descriptions below were manually parsed from the commandline program's help/usage output.
+
+| Argument | Equivalent | Description | 
+| :--- | :--- | :--- |
+| `kernels` | `-k  <supporting kernel(s) name(s)>` | supporting kernel(s) name(s)> |
+|  `from1` | `-f1 <first ``from'' frame, name or ID>` | first "from" frame, name or ID |
+|  `to1` | `-t1 <first ``to'' frame, name or ID>` | first "to" frame, name or ID |
+|  `frame1` | `-c1 <first frame for coverage look up, name or ID>` | first frame for coverage look up, name or ID |
+|  `supporting_kernels1` | `-k1 <additional supporting kernel(s) for first file>` | additional supporting kernel(s) for first file |
+|  `from2` | `-f2 <second ``from'' frame, name or ID>` | second "from" frame, name or ID |
+|  `to2` | `-t2 <second ``to'' frame, name or ID>` | second "to" frame, name or ID |
+|  `frame2` | `-c2 <second frame for coverage look up, name or ID>` | second frame for coverage look up, name or ID |
+|  `supporting_kernels2` | `-k2 <additional supporting kernel(s) for second file>` | additional supporting kernel(s) for second file |
+| `angular`  | `-a  <compare angular velocities: yes|no (default: no)>` | compare angular velocities |
+|  `angularframe` | `-m  <frame for angular velocities: from|to (default: from)>` | frame for angular velocities |
+|  `start` | `-b  <interval start time>` | interval start time |
+|  `stop` | `-e  <interval stop time>` | interval stop time |
+|  `numpoints` | `-n  <number of points: 1 to 1000000 (default: 1000)>` | number of points |
+|  `timestep` | `-s  <time step in seconds>` | time step in seconds |
+|  `timeformat` | `-f  <time format: et|sclk|sclkd|ticks|picture_for_TIMOUT (default: et)>` | time format |
+|  `report` | `-t  <report: basic|stats|dumpaa|dumpm|dumpqs|dumpqo|dumpea|dumpc|dumpg>` | report |
+|  `rotation` | `-o  <rotation axes order (default: z y x)>` | rotation axes order |
+| `units`  | `-x  <units for output angles> (only for -t dumpaa and -t dumpea)` | units for output angles |
+| `sigdigs`  | `-d  <number of significant digits: 6 to 17 (default: 14)>` | number of significant digits |
 """
-function frmdiff() end
+function frmdiff(
+    file::AbstractString...;
+    kernels=nothing,
+    from1=nothing,
+    to1=nothing,
+    frame1=nothing,
+    supporting_kernels1=nothing,
+    from2=nothing,
+    to2=nothing,
+    frame2=nothing,
+    supporting_kernels2=nothing,
+    angular=false,
+    angularframe=nothing,
+    start=nothing,
+    stop=nothing,
+    numpoints=nothing,
+    timestep=nothing,
+    timeformat=nothing,
+    report=nothing,
+    rotation=nothing,
+    units=nothing,
+    sigdigs=nothing
+) 
+
+    args = String[]
+
+    !isnothing(kernels) && push!(args, "-k $kernels")
+    !isnothing(from1) && push!(args, "-f1 $from1")
+    !isnothing(to1) && push!(args, "-t1 $to1")
+    !isnothing(frame1) && push!(args, "-c1 $frame1")
+    !isnothing(supporting_kernels1) && push!(args, "-k1 $(supporting_kernels1)")
+    !isnothing(from2) && push!(args, "-f2 $from2")
+    !isnothing(to2) && push!(args, "-t2 $to2")
+    !isnothing(frame2) && push!(args, "-c2 $frame2")
+    !isnothing(supporting_kernels2) && push!(args, "-k2 $(supporting_kernels2)")
+
+    angular && push!(args, "-a " * (angular ? "yes" : "no"))
+
+    !isnothing(angularframe) && push!(args, "-m $angularframe")
+    !isnothing(start) && push!(args, "-b $start")
+    !isnothing(stop) && push!(args, "-e $stop")
+    !isnothing(numpoints) && push!(args, "-n $numpoints")
+    !isnothing(timestep) && push!(args, "-s $timestep")
+    !isnothing(timeformat) && push!(args, "-f $timeformat")
+    !isnothing(report) && push!(args, "-t $report")
+    !isnothing(rotation) && push!(args, "-o $rotation")
+    !isnothing(units) && push!(args, "-x $units")
+    !isnothing(sigdigs) && push!(args, "-d $sigdigs")
+
+    args = join(args, " ")
+    files = join(file, " ")
+    cmd = `$(CSPICE_jll.frmdiff()) $args $files`
+    @debug cmd
+    run(cmd)
+
+    nothing
+end
 
 
 """
@@ -418,7 +502,7 @@ function inspekt() end
 
 
 """
-MKDSK is a utility program that creates a SPICE Digital Shape Kernel (DSK) file from a text file containing shape data for an extended object.
+MKDSK is a utielity program that creates a SPICE Digital Shape Kernel (DSK) file from a text file containing shape data for an extended object.
 """
 function mkdsk() end
 

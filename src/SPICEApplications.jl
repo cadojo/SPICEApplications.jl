@@ -403,7 +403,7 @@ FRMDIFF is a program that samples orientation of a reference frame known to SPIC
 | `sigdigs`  | `-d  <number of significant digits: 6 to 17 (default: 14)>` | number of significant digits |
 """
 function frmdiff(
-    kernels=nothing, from1=nothing, to1=nothing, frame1=nothing, supporting_kernels1=nothing,
+    ; kernels=nothing, from1=nothing, to1=nothing, frame1=nothing, supporting_kernels1=nothing,
     from2=nothing, to2=nothing, frame2=nothing, supporting_kernels2=nothing, angular=false, 
     angularframe=nothing, start=nothing, stop=nothing, numpoints=nothing, timestep=nothing, 
     timeformat=nothing, report=nothing, rotation=nothing, units=nothing, sigdigs=nothing

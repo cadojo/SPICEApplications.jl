@@ -46,7 +46,6 @@ export
     toxfr,
     version
 
-using Tables
 import CSPICE_jll
 
 using DocStringExtensions

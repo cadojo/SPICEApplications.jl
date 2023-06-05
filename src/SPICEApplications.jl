@@ -28,10 +28,6 @@ export
     chronos,
     ckbrief,
     commnt,
-    simple,
-    states,
-    subpt,
-    tictoc,
     dskbrief,
     dskexp,
     frmdiff,
@@ -43,8 +39,7 @@ export
     spkdiff,
     spkmerge,
     tobin,
-    toxfr,
-    version
+    toxfr
 
 import CSPICE_jll
 

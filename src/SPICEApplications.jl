@@ -85,7 +85,7 @@ function brief(
     sec=false, min=false, hour=false, day=false, bytime=false, bycoverage=false,
     byid=false, byname=false, body=nothing, center=nothing, at=nothing, from=nothing,
     to=nothing, listfile=nothing, help=false, version=false, 
-    stdout=stdout, stderr=stderr, stdin=stdin,
+    stdout=stdout, stderr=stderr, stdin=stdin, append=false, wait=true,
 )
     args = String[]
     tabular && push!(args, "-t")
@@ -117,11 +117,15 @@ function brief(
 
     args = join(args, " ")
     files = join(file, " ")
-    cmd = pipeline(`$(CSPICE_jll.brief()) $args $files`; stdout=stdout, stderr=stderr, stdin=stdin)
-    @debug cmd
-    run(cmd)
+    cmd = `$(CSPICE_jll.brief()) $args $files`
+    
+    if wait
+        cmd = pipeline(cmd; stdout=stdout, stderr=stderr, stdin=stdin, append=append)
+    end
 
-    nothing
+    result = run(cmd; wait=wait)
+
+    return result
 end
 
 
@@ -156,7 +160,7 @@ function chronos(
     from=nothing, fromtype=nothing, to=nothing, totype=nothing, format=nothing,
     time=nothing, sc=nothing, center=nothing, landingtime=nothing, sol1index=nothing,
     nolabel=false, trace=false, help=false, usage=false, template=false,
-    stdout=stdout, stderr=stderr, stdin=stdin,
+    stdout=stdout, stderr=stderr, stdin=stdin, append=false, wait=true,
 )
     args = String[]
 
@@ -178,11 +182,15 @@ function chronos(
 
     args = join(args, " ")
     files = join(file, " ")
-    cmd = pipeline(`$(CSPICE_jll.chronos()) $files $args`; stdout=stdout, stderr=stderr, stdin=stdin)
-    @debug cmd
-    run(cmd)
+    cmd = `$(CSPICE_jll.chronos()) $files $args`
 
-    nothing
+    if wait
+        cmd = pipeline(cmd; stdout=stdout, stderr=stderr, stdin=stdin, append=append)
+    end
+
+    result = run(cmd; wait=wait)
+
+    return result
 end
 
 
@@ -217,7 +225,7 @@ function ckbrief(
     dump=false, boundaries=false, relframes=false, idframes=false, tabular=false,
     single=false, bycoverage=false, utc=false, utcdoy=false, sclk=false, dpsclk=false,
     id=nothing, summarize=nothing, help=false, version=false,
-    stdout=stdout, stderr=stderr, stdin=stdin,
+    stdout=stdout, stderr=stderr, stdin=stdin, append=false, wait=true,
 )
     args = String[]
 
@@ -241,11 +249,15 @@ function ckbrief(
 
     args = join(args, " ")
     files = join(file, " ")
-    cmd = pipeline(`$(CSPICE_jll.ckbrief()) $files $args`; stdout=stdout, stderr=stderr, stdin=stdin)
-    @debug cmd
-    run(cmd)
+    cmd = `$(CSPICE_jll.ckbrief()) $files $args`
 
-    nothing
+    if wait
+        cmd = pipeline(cmd; stdout=stdout, stderr=stderr, stdin=stdin, append=append)
+    end
+    
+    result = run(cmd; wait=wait)
+
+    return result
 end
 
 
@@ -259,7 +271,7 @@ COMMNT is a command-line program that reads, adds, extracts, or deletes comments
 
 | Argument | Equivalent | Description | 
 | :--- | :--- | :--- |
-| `append` | `-a` | add comments to binary kernel |
+| `add` | `-a` | add comments to binary kernel |
 | `extract` | `-e` | extract comments from a binary kernel |
 | `read` | `-r` | read the comments in a binary kernel | 
 | `delete` | `-d`| delete the comments from the binary kernel | 
@@ -267,23 +279,27 @@ COMMNT is a command-line program that reads, adds, extracts, or deletes comments
 """
 function commnt(
     kernelfile::AbstractString, commentfile::AbstractString;
-    append=false, extract=false, read=false, delete=false, help=false,
-    stdout=stdout, stderr=stderr, stdin=stdin,
+    add=false, extract=false, read=false, delete=false, help=false,
+    stdout=stdout, stderr=stderr, stdin=stdin, append=false, wait=true,
 ) 
     args = String[]
 
-    append && push!(args, "-a")
+    add && push!(args, "-a")
     extract && push!(args, "-e")
     read && push!(args, "-r")
     delete && push!(args, "-d")
     help && push!(args, "-h")
 
     args = join(args, " ")
-    cmd = pipeline(`$(CSPICE_jll.commnt()) $args $kernelfile $commentfile`; stdout=stdout, stderr=stderr, stdin=stdin)
-    @debug cmd
-    run(cmd)
+    cmd = `$(CSPICE_jll.commnt()) $args $kernelfile $commentfile`
 
-    nothing
+    if wait
+        cmd = pipeline(cmd; stdout=stdout, stderr=stderr, stdin=stdin, append=append)
+    end
+
+    result = run(cmd; wait=wait)
+
+    return result
 end
 
 
@@ -311,7 +327,7 @@ function dskbrief(
     file::AbstractString...;
     single=false, gaps=false, extended=false, timebounds=false, bysegment=false,
     full=false, sigdigs=nothing, version=false, help=false, usage=false,
-    stdout=stdout, stderr=stderr, stdin=stdin,
+    stdout=stdout, stderr=stderr, stdin=stdin, append=false, wait=true,
 ) 
     args = String[]
 
@@ -329,11 +345,15 @@ function dskbrief(
 
     args = join(args, " ")
     files = join(files, " ")
-    cmd = pipeline(`$(CSPICE_jll.dskbrief()) $args $files`; stdout=stdout, stderr=stderr, stdin=stdin)
-    @debug cmd
-    run(cmd)
+    cmd = `$(CSPICE_jll.dskbrief()) $args $files`
 
-    nothing
+    if wait
+        cmd = pipeline(cmd; stdout=stdout, stderr=stderr, stdin=stdin, append=append)
+    end
+
+    result = run(cmd; wait=wait)
+
+    return result
 end
 
 
@@ -354,7 +374,7 @@ DSKEXP is a command-line program that exports data from DSK files to text files.
 """
 function dskexp(
     ; dsk=nothing, text=nothing, format=nothing, precision=nothing,
-      stdout=stdout, stderr=stderr, stdin=stdin,
+      stdout=stdout, stderr=stderr, stdin=stdin, append=false, wait=true,
 ) 
     args = String[]
 
@@ -364,11 +384,15 @@ function dskexp(
     !isnothing(precision) && push!(args, "-prec $precision")
 
     args = join(args, " ")
-    cmd = pipeline(`$(CSPICE_jll.dskexp()) $args`; stdout=stdout, stderr=stderr, stdin=stdin)
-    @debug cmd
-    run(cmd)
+    cmd = `$(CSPICE_jll.dskexp()) $args`
 
-    nothing
+    if wait
+        cmd = pipeline(cmd; stdout=stdout, stderr=stderr, stdin=stdin, append=append)
+    end
+
+    result = run(cmd; wait=wait)
+
+    return result
 end
 
 
@@ -408,7 +432,7 @@ function frmdiff(
     from2=nothing, to2=nothing, frame2=nothing, supporting_kernels2=nothing, angular=false, 
     angularframe=nothing, start=nothing, stop=nothing, numpoints=nothing, timestep=nothing, 
     timeformat=nothing, report=nothing, rotation=nothing, units=nothing, sigdigs=nothing,
-    stdout=stdout, stderr=stderr, stdin=stdin,
+    stdout=stdout, stderr=stderr, stdin=stdin, append=false, wait=true,
 ) 
     args = String[]
 
@@ -452,23 +476,28 @@ function frmdiff(
     !isnothing(sigdigs) && push!(args, "-d $sigdigs")
 
     args = join(args, " ")
-    cmd = pipeline(`$(CSPICE_jll.frmdiff()) $args`; stdout=stdout, stderr=stderr, stdin=stdin)
-    @debug cmd
-    run(cmd)
+    cmd = `$(CSPICE_jll.frmdiff()) $args`
 
-    nothing
+    if wait
+        cmd = pipeline(cmd; stdout=stdout, stderr=stderr, stdin=stdin, append=append)
+    end
+
+    
+    result = run(cmd; wait=wait)
+
+    return result
 end
 
 
 """
 INSPEKT is an interactive program that examines the contents of an events component (ESQ) of an E-kernel.
 """
-function inspekt(; stdout=stdout, stderr=stderr, stdin=stdin,) 
-    cmd = pipeline(`$(CSPICE_jll.inspekt())`; stdout=stdout, stderr=stderr, stdin=stdin)
-    @debug cmd
-    run(cmd)
+function inspekt(; stdout=stdout, stderr=stderr, stdin=stdin, append=false, wait=true,) 
+    cmd = pipeline(`$(CSPICE_jll.inspekt())`; stdout=stdout, stderr=stderr, stdin=stdin, append=append)
+    
+    result = run(cmd; wait=wait)
 
-    nothing
+    return result
 end
 
 
@@ -493,7 +522,7 @@ MKDSK is a utility program that creates a SPICE Digital Shape Kernel (DSK) file 
 function mkdsk(
     ; setup=nothing, input=nothing, output=nothing, help=false,
       template=false, usage=false, version=false,
-      stdout=stdout, stderr=stderr, stdin=stdin,
+      stdout=stdout, stderr=stderr, stdin=stdin, append=false, wait=true,
 ) 
     args = String[]
     !isnothing(setup) && push!(args, "-setup $setup")
@@ -507,11 +536,15 @@ function mkdsk(
 
     args = join(args, " ")
     files = join(file, " ")
-    cmd = pipeline(`$(CSPICE_jll.mkdsk()) $args $files`; stdout=stdout, stderr=stderr, stdin=stdin)
-    @debug cmd
-    run(cmd)
+    cmd = `$(CSPICE_jll.mkdsk()) $args $files`
 
-    nothing
+    if wait
+        cmd = pipeline(cmd; stdout=stdout, stderr=stderr, stdin=stdin, append=append)
+    end
+
+    result = run(cmd; wait=wait)
+
+    return result
 end
 
 
@@ -528,32 +561,36 @@ MKSPK is a program that creates an SPK file from a text file containing trajecto
 | `setup` | `-setup <setup file name>` | setup file name |
 | `input` | `-input <input shape data file name>` | input shape data file name | 
 | `output` | `-output <output DSK file name>` | output DSK file name |
-| `append` | `-append` | append; output file must be new |
+| `add` | `-append` | append; output file must be new |
 | `help` | `-h│-help` | display help |
 | `template` | `-t│-template` | display template |
 | `usage` | `-u│-usage` | display usage |
 """
 function mkspk(
-    ; setup=nothing, input=nothing, output=nothing, append=false, 
+    ; setup=nothing, input=nothing, output=nothing, add=false, 
       usage=false, help=false, template=false,
-      stdout=stdout, stderr=stderr, stdin=stdin,
+      stdout=stdout, stderr=stderr, stdin=stdin, append=false, wait=true,
 )
     args = String[]
     !isnothing(setup) && push!(args, "-setup $setup")
     !isnothing(input) && push!(args, "-input $input")
     !isnothing(output) && push!(args, "-output $output")
 
-    append && push!(args, "-append")
+    add && push!(args, "-append")
     usage && push!(args, "-usage")
     help && push!(args, "-help")
     template && push!(args, "-template")
 
     args = join(args, " ")
-    cmd = pipeline(`$(CSPICE_jll.mkspk()) $args`; stdout=stdout, stderr=stderr, stdin=stdin)
-    @debug cmd
-    run(cmd)
+    cmd = `$(CSPICE_jll.mkspk()) $args`
 
-    nothing
+    if wait
+        cmd = pipeline(cmd; stdout=stdout, stderr=stderr, stdin=stdin, append=append)
+    end
+
+    result = run(cmd; wait=wait)
+
+    return result
 end
 
 
@@ -562,7 +599,7 @@ MSOPCK is a command-line program that converts attitude data provided in a text 
 """
 function msopck(
     ; setup=nothing, input=nothing, output=nothing,
-      stdout=stdout, stderr=stderr, stdin=stdin,
+      stdout=stdout, stderr=stderr, stdin=stdin, append=false, wait=true,
 ) 
     args = String[]
     !isnothing(setup) && push!(args, "-setup $setup")
@@ -570,23 +607,31 @@ function msopck(
     !isnothing(output) && push!(args, "-output $output")
 
     args = join(args, " ")
-    cmd = pipeline(`$(CSPICE_jll.msopck()) $args`; stdout=stdout, stderr=stderr, stdin=stdin)
-    @debug cmd
-    run(cmd)
+    cmd = `$(CSPICE_jll.msopck()) $args`
 
-    nothing
+    if wait
+        cmd = pipeline(cmd; stdout=stdout, stderr=stderr, stdin=stdin, append=append)
+    end
+    
+    result = run(cmd; wait=wait)
+
+    return result
 end
 
 
 """
 SPACIT is an interactive program that converts kernels in transfer format to binary format, converts binary kernels to transfer format, and summarizes the contents of binary kernels.
 """
-function spacit(; stdout=stdout, stderr=stderr, stdin=stdin) 
-    cmd = pipeline(`$(CSPICE_jll.spacit())`; stdout=stdout, stderr=stderr, stdin=stdin)
-    @debug cmd
-    run(cmd)
+function spacit(; stdout=stdout, stderr=stderr, stdin=stdin, append=false, wait=true) 
+    cmd = `$(CSPICE_jll.spacit())`
 
-    nothing
+    if wait
+        cmd = pipeline(cmd; stdout=stdout, stderr=stderr, stdin=stdin, append=append)
+    end
+
+    result = run(cmd; wait=wait)
+
+    return result
 end
 
 
@@ -620,7 +665,7 @@ function spkdiff(
     ; kernels=nothing, body1=nothing, center1=nothing, frame1=nothing, supporting_kernels1=nothing,
       body2=nothing, center2=nothing, frame2=nothing, supporting_kernels2=nothing, 
       start=nothing, stop=nothing, timestep=nothing, numstates=nothing, timeformat=nothing, 
-      sigdigs=nothing, report=nothing, stdout=stdout, stderr=stderr, stdin=stdin,
+      sigdigs=nothing, report=nothing, stdout=stdout, stderr=stderr, stdin=stdin, append=false, wait=true,
 ) 
     args = String[]
 
@@ -659,59 +704,64 @@ function spkdiff(
     !isnothing(report) && push!(args, "-t $report")
 
     args = join(args, " ")
-    cmd = pipeline(`$(CSPICE_jll.spkdiff()) $args`; stdout=stdout, stderr=stderr, stdin=stdin)
-    @debug cmd
-    run(cmd)
+    cmd = `$(CSPICE_jll.spkdiff()) $args`
 
-    nothing
+    if wait
+        cmd = pipeline(cmd; stdout=stdout, stderr=stderr, stdin=stdin, append=append)
+    end
+
+    
+    result = run(cmd; wait=wait)
+
+    return result
 end
 
 
 """
 SPKMERGE is a program that subsets or merges one or more SPK files into a single SPK file.
 """
-function spkmerge(commandfile=nothing; stdout=stdout, stderr=stderr, stdin=stdin) 
-    cmd = pipeline(
-        `$(CSPICE_jll.spkmerge()) $(isnothing(commandfile) ? "" : commandfile)`,
-        stdout=stdout, stderr=stderr, stdin=stdin
-    )
+function spkmerge(commandfile=nothing; stdout=stdout, stderr=stderr, stdin=stdin, append=false, wait=true) 
+    cmd = `$(CSPICE_jll.spkmerge()) $(isnothing(commandfile) ? "" : commandfile)`
+        
+    if wait
+        cmd = pipeline(cmd; stdout=stdout, stderr=stderr, stdin=stdin, append=append)
+    end
+    
+    result = run(cmd; wait=wait)
 
-    @debug cmd
-    run(cmd)
-
-    nothing
+    return result
 end
 
 
 """
 TOBIN is a command-line program that converts transfer format SPK, CK, PCK, DSK and EK files to binary format.
 """
-function tobin(kernelfile=nothing; stdout=stdout, stderr=stderr, stdin=stdin) 
-    cmd = pipeline(
-        `$(CSPICE_jll.tobin()) $(isnothing(kernelfile) ? "" : kernelfile)`; 
-        stdout=stdout, stderr=stderr, stdin=stdin
-    )
+function tobin(kernelfile=nothing; stdout=stdout, stderr=stderr, stdin=stdin, append=false, wait=true) 
+    cmd = `$(CSPICE_jll.tobin()) $(isnothing(kernelfile) ? "" : kernelfile)`
+        
+    if wait
+        cmd = pipeline(cmd; stdout=stdout, stderr=stderr, stdin=stdin, append=append)
+    end
 
-    @debug cmd
-    run(cmd)
+    result = run(cmd; wait=wait)
 
-    nothing
+    return result
 end
 
 
 """
 TOXFR is a command-line program that converts binary format SPK, CK, PCK, DSK and EK files to transfer format.
 """
-function toxfr(kernelfile=nothing; stdout=stdout, stderr=stderr, stdin=stdin) 
-    cmd = pipeline(
-        `$(CSPICE_jll.toxfr()) $(isnothing(kernelfile) ? "" : kernelfile)`; 
-        stdout=stdout, stderr=stderr, stdin=stdin
-    )
-    
-    @debug cmd
-    run(cmd)
+function toxfr(kernelfile=nothing; stdout=stdout, stderr=stderr, stdin=stdin, append=false, wait=true) 
+    cmd = `$(CSPICE_jll.toxfr()) $(isnothing(kernelfile) ? "" : kernelfile)`
 
-    nothing
+    if wait
+        cmd = pipeline(cmd; stdout=stdout, stderr=stderr, stdin=stdin, append=append)
+    end
+    
+    result = run(cmd; wait=wait)
+
+    return result
 end
 
 

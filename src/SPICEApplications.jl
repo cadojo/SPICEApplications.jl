@@ -221,7 +221,7 @@ CKBRIEF is a command-line utility program that displays a contents and time cove
 | `version` | `-v` | display version |
 """
 function ckbrief(
-    files::AbstractString...;
+    file::AbstractString...;
     dump=false, boundaries=false, relframes=false, idframes=false, tabular=false,
     single=false, bycoverage=false, utc=false, utcdoy=false, sclk=false, dpsclk=false,
     id=nothing, summarize=nothing, help=false, version=false,
@@ -278,7 +278,7 @@ COMMNT is a command-line program that reads, adds, extracts, or deletes comments
 | `help` | `-h` | display the help message |
 """
 function commnt(
-    kernelfile::AbstractString, commentfile::AbstractString;
+    kernelfile::Union{<:AbstractString,Nothing} = nothing, commentfile::Union{<:AbstractString,Nothing} = nothing;
     add=false, extract=false, read=false, delete=false, help=false,
     stdout=stdout, stderr=stderr, stdin=stdin, append=false, wait=true,
 ) 
@@ -290,8 +290,11 @@ function commnt(
     delete && push!(args, "-d")
     help && push!(args, "-h")
 
+    kernel = isnothing(kernelfile) ? "" : kernelfile
+    comment = isnothing(commentfile) ? "" : commentfile
+
     args = join(args, " ")
-    cmd = `$(CSPICE_jll.commnt()) $args $kernelfile $commentfile`
+    cmd = `$(CSPICE_jll.commnt()) $args $kernel $comment`
 
     if wait
         cmd = pipeline(cmd; stdout=stdout, stderr=stderr, stdin=stdin, append=append)
@@ -344,7 +347,7 @@ function dskbrief(
     usage && push!(args, "-u")
 
     args = join(args, " ")
-    files = join(files, " ")
+    files = join(file, " ")
     cmd = `$(CSPICE_jll.dskbrief()) $args $files`
 
     if wait

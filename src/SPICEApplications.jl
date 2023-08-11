@@ -159,7 +159,7 @@ function chronos(
     file::AbstractString...;
     from=nothing, fromtype=nothing, to=nothing, totype=nothing, format=nothing,
     time=nothing, sc=nothing, center=nothing, landingtime=nothing, sol1index=nothing,
-    nolabel=false, trace=false, help=false, usage=false, template=false,
+    nolabel=false, trace=false, help=false, usage=false, template=nothing,
     stdout=stdout, stderr=stderr, stdin=stdin, append=false, wait=true,
 )
     args = String[]
@@ -178,7 +178,7 @@ function chronos(
     trace && push!(args, "-TRACE")
     help && push!(args, "-HELP")
     usage && push!(args, "-USAGE")
-    template && push!(args, "-TEMPLATE")
+    !isnothing(template) && push!(args, "-TEMPLATE $template")
 
     args = join(args, " ")
     files = join(file, " ")
@@ -524,7 +524,7 @@ MKDSK is a utility program that creates a SPICE Digital Shape Kernel (DSK) file 
 """
 function mkdsk(
     ; setup=nothing, input=nothing, output=nothing, help=false,
-      template=false, usage=false, version=false,
+      template=nothing, usage=false, version=false,
       stdout=stdout, stderr=stderr, stdin=stdin, append=false, wait=true,
 ) 
     args = String[]
@@ -533,7 +533,7 @@ function mkdsk(
     !isnothing(output) && push!(args, "-output $output")
 
     help && push!(args, "-help")
-    template && push!(args, "-template")
+    !isnothing(template) && push!(args, "-template $template")
     usage && push!(args, "-usage")
     version && push!(args, "-version")
 
@@ -571,7 +571,7 @@ MKSPK is a program that creates an SPK file from a text file containing trajecto
 """
 function mkspk(
     ; setup=nothing, input=nothing, output=nothing, add=false, 
-      usage=false, help=false, template=false,
+      usage=false, help=false, template=nothing,
       stdout=stdout, stderr=stderr, stdin=stdin, append=false, wait=true,
 )
     args = String[]
@@ -582,7 +582,7 @@ function mkspk(
     add && push!(args, "-append")
     usage && push!(args, "-usage")
     help && push!(args, "-help")
-    template && push!(args, "-template")
+    !isnothing(template) && push!(args, "-template $template")
 
     args = join(args, " ")
     cmd = `$(CSPICE_jll.mkspk()) $args`

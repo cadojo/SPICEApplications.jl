@@ -3,7 +3,11 @@ using Documenter, SPICEApplications
 makedocs(
     sitename="SPICEApplications",
     format=Documenter.HTML(),
-    modules=[SPICEApplications]
+    modules=[SPICEApplications],
+    pages=[
+        "Overview" => "index.md",
+        "Reference" => "reference/index.md",
+    ]
 )
 
 deploydocs(
